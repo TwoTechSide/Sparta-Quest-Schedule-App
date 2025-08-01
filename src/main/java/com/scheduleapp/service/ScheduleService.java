@@ -21,6 +21,7 @@ public class ScheduleService {
         return scheduleRepository.save(schedule);
     }
 
+    // userName == null 이면 전체 일정, userName != null 이면 필터 조건으로 일부 일정을 반환
     public List<ScheduleDto> findAllSchedule(String userName) {
         return scheduleRepository.findAll().stream()
                 .filter(schedule -> userName == null || schedule.getUserName().equals(userName))
@@ -29,12 +30,8 @@ public class ScheduleService {
                 .toList();
     }
 
-    public ScheduleDto findScheduleById(Long id) {
-
-        Optional<Schedule> scheduleEntity = scheduleRepository.findById(id);
-
-        if (scheduleEntity.isEmpty()) throw new EntityNotFoundException(id + "번째 일정을 찾을 수 없음");
-        return entityToDto(scheduleEntity.get());
+    public Optional<Schedule> findScheduleById(Long id) {
+        return scheduleRepository.findById(id);
     }
 
     public ScheduleDto entityToDto(Schedule schedule) {
