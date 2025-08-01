@@ -11,7 +11,7 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
 
-    public void save(Schedule schedule) {
-        scheduleRepository.save(schedule);
+    public Schedule saveSchedule(Schedule schedule) {
+        return scheduleRepository.save(schedule);
     }
 }
