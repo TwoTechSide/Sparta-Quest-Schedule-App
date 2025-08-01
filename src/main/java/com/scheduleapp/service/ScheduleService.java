@@ -21,6 +21,8 @@ public class ScheduleService {
                 .id(schedule.getId())
                 .title(schedule.getTitle())
                 .content(schedule.getContent())
-                .userName(schedule.getUserName()).build();
+                .userName(schedule.getUserName())
+                .createdAt(schedule.getCreatedAt())
+                .updatedAt(schedule.getUpdatedAt()).build();
     }
 }
