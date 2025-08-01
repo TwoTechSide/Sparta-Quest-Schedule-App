@@ -4,10 +4,9 @@ import com.scheduleapp.dto.ScheduleDto;
 import com.scheduleapp.entity.Schedule;
 import com.scheduleapp.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,5 +19,10 @@ public class ScheduleController {
     public ScheduleDto createSchedule(@RequestBody Schedule schedule) {
         Schedule savedSchedule = scheduleService.saveSchedule(schedule);
         return scheduleService.entityToDto(savedSchedule);
+    }
+
+    @GetMapping
+    public List<ScheduleDto> findAllSchedules(@RequestParam(required = false) String userName) {
+        return scheduleService.findAllSchedule(userName);
     }
 }
