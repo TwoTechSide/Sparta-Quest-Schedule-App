@@ -1,5 +1,6 @@
 package com.scheduleapp.service;
 
+import com.scheduleapp.dto.ScheduleDto;
 import com.scheduleapp.entity.Schedule;
 import com.scheduleapp.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,5 +14,13 @@ public class ScheduleService {
 
     public Schedule saveSchedule(Schedule schedule) {
         return scheduleRepository.save(schedule);
+    }
+
+    public ScheduleDto entityToDto(Schedule schedule) {
+        return ScheduleDto.builder()
+                .id(schedule.getId())
+                .title(schedule.getTitle())
+                .content(schedule.getContent())
+                .userName(schedule.getUserName()).build();
     }
 }
