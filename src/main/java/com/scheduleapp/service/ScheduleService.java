@@ -3,11 +3,13 @@ package com.scheduleapp.service;
 import com.scheduleapp.dto.ScheduleDto;
 import com.scheduleapp.entity.Schedule;
 import com.scheduleapp.repository.ScheduleRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -25,6 +27,14 @@ public class ScheduleService {
                 .sorted(Comparator.comparing(Schedule::getUpdatedAt).reversed())
                 .map(this::entityToDto)
                 .toList();
+    }
+
+    public ScheduleDto findScheduleById(Long id) {
+
+        Optional<Schedule> scheduleEntity = scheduleRepository.findById(id);
+
+        if (scheduleEntity.isEmpty()) throw new EntityNotFoundException(id + "번째 일정을 찾을 수 없음");
+        return entityToDto(scheduleEntity.get());
     }
 
     public ScheduleDto entityToDto(Schedule schedule) {

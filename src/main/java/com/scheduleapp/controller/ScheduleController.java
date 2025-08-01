@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,5 +25,10 @@ public class ScheduleController {
     @GetMapping
     public List<ScheduleDto> findAllSchedules(@RequestParam(required = false) String userName) {
         return scheduleService.findAllSchedule(userName);
+    }
+
+    @GetMapping("/{userId}")
+    public ScheduleDto findSchedules(@PathVariable Long userId) {
+        return scheduleService.findScheduleById(userId);
     }
 }
