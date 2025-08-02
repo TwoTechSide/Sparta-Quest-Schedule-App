@@ -7,6 +7,7 @@ import com.scheduleapp.exception.InvalidPasswordException;
 import com.scheduleapp.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
@@ -18,11 +19,13 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
 
+    @Transactional
     public Schedule saveSchedule(Schedule schedule) {
         return scheduleRepository.save(schedule);
     }
 
     // userName == null 이면 전체 일정, userName != null 이면 필터 조건으로 일부 일정을 반환
+    @Transactional(readOnly = true)
     public List<ScheduleDto> findAllSchedule(String userName) {
         return scheduleRepository.findAll().stream()
                 .filter(schedule -> userName == null || schedule.getUserName().equals(userName))
@@ -31,6 +34,8 @@ public class ScheduleService {
                 .toList();
     }
 
+    // Schedule의 id 값에 맞는 특정 일정을 반환
+    @Transactional(readOnly = true)
     public ScheduleDto findScheduleById(Long id) {
         Schedule schedule = scheduleRepository.findById(id)
                 .orElseThrow(NoSuchElementException::new);
