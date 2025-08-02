@@ -58,4 +58,18 @@ public class ScheduleController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
+
+    // 선택된 id의 Schedule 삭제
+    // Schedule의 id를 찾을 수 없으면 BAD_REQUEST, 비밀번호가 일치하지 않으면 UNAUTHORIZED로 예외 처리
+    @DeleteMapping("/{scheduleId}")
+    public ResponseEntity<Void> deleteSchedule(@PathVariable Long scheduleId, @RequestParam String inputPassword) {
+        try {
+            scheduleService.deleteSchedule(scheduleId, inputPassword);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (InvalidPasswordException e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+    }
 }
