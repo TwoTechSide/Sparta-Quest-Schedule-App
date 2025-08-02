@@ -39,4 +39,15 @@ public class ScheduleController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @PatchMapping("/{scheduleId}")
+    public ResponseEntity<ScheduleDto> editSchedule(@PathVariable Long scheduleId, @RequestBody ScheduleDto scheduleDto) {
+        // scheduleId 일정을 찾을 수 없는 경우 BAD REQUEST 반환
+        try {
+            ScheduleDto updatedScheduleDto = scheduleService.updateScheduleTitleAndUsername(scheduleId, scheduleDto);
+            return new ResponseEntity<>(updatedScheduleDto, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }

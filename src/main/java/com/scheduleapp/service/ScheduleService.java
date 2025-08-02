@@ -47,4 +47,14 @@ public class ScheduleService {
                 .createdAt(schedule.getCreatedAt())
                 .modifiedAt(schedule.getModifiedAt()).build();
     }
+
+    public ScheduleDto updateScheduleTitleAndUsername(Long scheduleId, ScheduleDto scheduleDto) {
+        try {
+            Schedule schedule = scheduleRepository.findById(scheduleId).get();
+            schedule.updateTitleAndUsername(scheduleDto.getTitle(), scheduleDto.getUserName());
+            return entityToDto(scheduleRepository.save(schedule));
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("Schedule with id " + scheduleId + " not found");
+        }
+    }
 }
