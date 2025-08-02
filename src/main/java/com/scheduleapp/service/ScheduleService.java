@@ -1,14 +1,17 @@
 package com.scheduleapp.service;
 
+import com.scheduleapp.dto.EditScheduleTitleAndUsernameDto;
 import com.scheduleapp.dto.ScheduleDto;
 import com.scheduleapp.entity.Schedule;
+import com.scheduleapp.exception.InvalidPasswordException;
 import com.scheduleapp.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Service
@@ -16,21 +19,28 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
 
+    @Transactional
     public Schedule saveSchedule(Schedule schedule) {
         return scheduleRepository.save(schedule);
     }
 
     // userName == null 이면 전체 일정, userName != null 이면 필터 조건으로 일부 일정을 반환
+    @Transactional(readOnly = true)
     public List<ScheduleDto> findAllSchedule(String userName) {
         return scheduleRepository.findAll().stream()
                 .filter(schedule -> userName == null || schedule.getUserName().equals(userName))
-                .sorted(Comparator.comparing(Schedule::getUpdatedAt).reversed())
+                .sorted(Comparator.comparing(Schedule::getModifiedAt).reversed())
                 .map(this::entityToDto)
                 .toList();
     }
 
-    public Optional<Schedule> findScheduleById(Long id) {
-        return scheduleRepository.findById(id);
+    // Schedule의 id 값에 맞는 특정 일정을 반환
+    @Transactional(readOnly = true)
+    public ScheduleDto findScheduleById(Long id) {
+        Schedule schedule = scheduleRepository.findById(id)
+                .orElseThrow(NoSuchElementException::new);
+
+        return entityToDto(schedule);
     }
 
     public ScheduleDto entityToDto(Schedule schedule) {
@@ -40,6 +50,25 @@ public class ScheduleService {
                 .content(schedule.getContent())
                 .userName(schedule.getUserName())
                 .createdAt(schedule.getCreatedAt())
-                .updatedAt(schedule.getUpdatedAt()).build();
+                .modifiedAt(schedule.getModifiedAt()).build();
+    }
+
+    // scheduleId로 일정을 찾을 수 없는 경우 -> NoSuchElementException
+    // 패스워드가 일치하지 않는 경우 -> InvalidPasswordException
+    public ScheduleDto updateScheduleTitleAndUsername(Long scheduleId, EditScheduleTitleAndUsernameDto editScheduleTitleAndUsernameDto) {
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(NoSuchElementException::new);
+
+        if (isInvalidPassword(schedule, editScheduleTitleAndUsernameDto.getPassword()))
+            throw new InvalidPasswordException();
+
+        schedule.updateTitleAndUsername(editScheduleTitleAndUsernameDto.getTitle(), editScheduleTitleAndUsernameDto.getUserName());
+        return entityToDto(scheduleRepository.save(schedule));
+    }
+
+    // 비밀번호 불일치 여부
+    public boolean isInvalidPassword(Schedule schedule, String password) {
+        String dbPassword = schedule.getPassword();
+        return !password.equals(dbPassword);
     }
 }
