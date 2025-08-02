@@ -24,7 +24,7 @@ public class ScheduleService {
     public List<ScheduleDto> findAllSchedule(String userName) {
         return scheduleRepository.findAll().stream()
                 .filter(schedule -> userName == null || schedule.getUserName().equals(userName))
-                .sorted(Comparator.comparing(Schedule::getUpdatedAt).reversed())
+                .sorted(Comparator.comparing(Schedule::getModifiedAt).reversed())
                 .map(this::entityToDto)
                 .toList();
     }
@@ -40,6 +40,6 @@ public class ScheduleService {
                 .content(schedule.getContent())
                 .userName(schedule.getUserName())
                 .createdAt(schedule.getCreatedAt())
-                .updatedAt(schedule.getUpdatedAt()).build();
+                .modifiedAt(schedule.getModifiedAt()).build();
     }
 }

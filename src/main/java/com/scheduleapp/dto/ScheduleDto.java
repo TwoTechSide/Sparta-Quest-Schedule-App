@@ -15,5 +15,5 @@ public class ScheduleDto {
     private String userName;
 
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime modifiedAt;
 }
