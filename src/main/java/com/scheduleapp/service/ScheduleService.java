@@ -67,8 +67,8 @@ public class ScheduleService {
     }
 
     // 비밀번호 불일치 여부
-    public boolean isInvalidPassword(Schedule schedule, String password) {
-        String dbPassword = schedule.getPassword();
-        return !password.equals(dbPassword);
+    public boolean isInvalidPassword(Schedule schedule, String inputPassword) {
+        String storedPassword = schedule.getPassword();
+        return !inputPassword.equals(storedPassword);
     }
 }
