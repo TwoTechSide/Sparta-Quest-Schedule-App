@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,12 +29,14 @@ public class ScheduleController {
         return new ResponseEntity<>(scheduleService.findAllSchedule(userName), HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<ScheduleDto> findSchedules(@PathVariable Long userId) {
-        Optional<Schedule> schedule = scheduleService.findScheduleById(userId);
-
-        // 만약 userId 일정을 찾을 수 없는 경우 204 No Content 반환
-        return schedule.map(value -> new ResponseEntity<>(scheduleService.entityToDto(value), HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
+    @GetMapping("/{scheduleId}")
+    public ResponseEntity<ScheduleDto> findSchedules(@PathVariable Long scheduleId) {
+        // userId 일정을 찾을 수 없는 경우 NOT FOUND 반환
+        try {
+            ScheduleDto foundScheduleDto = scheduleService.findScheduleById(scheduleId);
+            return new ResponseEntity<>(foundScheduleDto, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

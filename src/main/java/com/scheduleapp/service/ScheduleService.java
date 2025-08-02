@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Service
@@ -29,8 +29,13 @@ public class ScheduleService {
                 .toList();
     }
 
-    public Optional<Schedule> findScheduleById(Long id) {
-        return scheduleRepository.findById(id);
+    public ScheduleDto findScheduleById(Long id) {
+        try {
+            Schedule schedule = scheduleRepository.findById(id).get();
+            return entityToDto(schedule);
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("Schedule with id " + id + " not found");
+        }
     }
 
     public ScheduleDto entityToDto(Schedule schedule) {
