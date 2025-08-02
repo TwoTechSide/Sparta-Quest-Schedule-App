@@ -1,7 +1,9 @@
 package com.scheduleapp.service;
 
+import com.scheduleapp.dto.EditScheduleTitleAndUsernameDto;
 import com.scheduleapp.dto.ScheduleDto;
 import com.scheduleapp.entity.Schedule;
+import com.scheduleapp.exception.InvalidPasswordException;
 import com.scheduleapp.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -46,10 +48,22 @@ public class ScheduleService {
                 .modifiedAt(schedule.getModifiedAt()).build();
     }
 
-    public ScheduleDto updateScheduleTitleAndUsername(Long scheduleId, ScheduleDto scheduleDto) {
+    // scheduleId로 일정을 찾을 수 없는 경우 -> NoSuchElementException
+    // 패스워드가 일치하지 않는 경우 -> InvalidPasswordException
+    public ScheduleDto updateScheduleTitleAndUsername(Long scheduleId, EditScheduleTitleAndUsernameDto editScheduleTitleAndUsernameDto) {
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(NoSuchElementException::new);
-        schedule.updateTitleAndUsername(scheduleDto.getTitle(), scheduleDto.getUserName());
+
+        if (isInvalidPassword(schedule, editScheduleTitleAndUsernameDto.getPassword()))
+            throw new InvalidPasswordException();
+
+        schedule.updateTitleAndUsername(editScheduleTitleAndUsernameDto.getTitle(), editScheduleTitleAndUsernameDto.getUserName());
         return entityToDto(scheduleRepository.save(schedule));
+    }
+
+    // 비밀번호 불일치 여부
+    public boolean isInvalidPassword(Schedule schedule, String password) {
+        String dbPassword = schedule.getPassword();
+        return !password.equals(dbPassword);
     }
 }

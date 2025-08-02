@@ -1,7 +1,9 @@
 package com.scheduleapp.controller;
 
+import com.scheduleapp.dto.EditScheduleTitleAndUsernameDto;
 import com.scheduleapp.dto.ScheduleDto;
 import com.scheduleapp.entity.Schedule;
+import com.scheduleapp.exception.InvalidPasswordException;
 import com.scheduleapp.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,13 +43,14 @@ public class ScheduleController {
     }
 
     @PatchMapping("/{scheduleId}")
-    public ResponseEntity<ScheduleDto> editSchedule(@PathVariable Long scheduleId, @RequestBody ScheduleDto scheduleDto) {
-        // scheduleId 일정을 찾을 수 없는 경우 BAD REQUEST 반환
+    public ResponseEntity<ScheduleDto> editSchedule(@PathVariable Long scheduleId, @RequestBody EditScheduleTitleAndUsernameDto editScheduleTitleAndUsernameDto) {
         try {
-            ScheduleDto updatedScheduleDto = scheduleService.updateScheduleTitleAndUsername(scheduleId, scheduleDto);
+            ScheduleDto updatedScheduleDto = scheduleService.updateScheduleTitleAndUsername(scheduleId, editScheduleTitleAndUsernameDto);
             return new ResponseEntity<>(updatedScheduleDto, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (InvalidPasswordException e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
 }
