@@ -30,12 +30,10 @@ public class ScheduleService {
     }
 
     public ScheduleDto findScheduleById(Long id) {
-        try {
-            Schedule schedule = scheduleRepository.findById(id).get();
-            return entityToDto(schedule);
-        } catch (NoSuchElementException e) {
-            throw new NoSuchElementException("Schedule with id " + id + " not found");
-        }
+        Schedule schedule = scheduleRepository.findById(id)
+                .orElseThrow(NoSuchElementException::new);
+
+        return entityToDto(schedule);
     }
 
     public ScheduleDto entityToDto(Schedule schedule) {
@@ -49,12 +47,9 @@ public class ScheduleService {
     }
 
     public ScheduleDto updateScheduleTitleAndUsername(Long scheduleId, ScheduleDto scheduleDto) {
-        try {
-            Schedule schedule = scheduleRepository.findById(scheduleId).get();
-            schedule.updateTitleAndUsername(scheduleDto.getTitle(), scheduleDto.getUserName());
-            return entityToDto(scheduleRepository.save(schedule));
-        } catch (NoSuchElementException e) {
-            throw new NoSuchElementException("Schedule with id " + scheduleId + " not found");
-        }
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(NoSuchElementException::new);
+        schedule.updateTitleAndUsername(scheduleDto.getTitle(), scheduleDto.getUserName());
+        return entityToDto(scheduleRepository.save(schedule));
     }
 }
