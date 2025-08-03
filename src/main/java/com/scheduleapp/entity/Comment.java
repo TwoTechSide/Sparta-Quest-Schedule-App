@@ -1,6 +1,6 @@
 package com.scheduleapp.entity;
 
-import com.scheduleapp.dto.comment.CommentResponseDto;
+import com.scheduleapp.dto.comment.CommentRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,10 +16,10 @@ public class Comment extends BaseEntity {
     private String userName;
     private String password;
 
-    public Comment(CommentResponseDto commentResponseDto, Schedule schedule) {
-        this.content = commentResponseDto.getContent();
-        this.userName = commentResponseDto.getUserName();
-        this.password = commentResponseDto.getPassword();
+    public Comment(CommentRequestDto commentRequestDto, Schedule schedule) {
+        this.content = commentRequestDto.getContent();
+        this.userName = commentRequestDto.getUserName();
+        this.password = commentRequestDto.getPassword();
         this.schedule = schedule;
     }
 
