@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -19,6 +21,9 @@ public class Schedule extends BaseEntity {
     private String content;
     private String userName;
     private String password;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "schedule")
+    private List<Comment> comments;
 
     public void updateTitleAndUsername(String title, String username) {
         this.title = title;

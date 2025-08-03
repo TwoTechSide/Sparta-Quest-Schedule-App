@@ -9,13 +9,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ScheduleNotFoundException.class)
-    public ResponseEntity<ErrorResponseDto> handleScheduleNotFoundException(ScheduleNotFoundException e) {
-        return new ResponseEntity<>(new ErrorResponseDto(HttpStatus.BAD_REQUEST, e.getMessage()), HttpStatus.BAD_REQUEST);
-    }
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ErrorResponseDto> handleCustomException(CustomException e) {
+        HttpStatus httpStatus = e.getErrorCode().getHttpStatus();
+        String message = e.getErrorCode().getMessage();
 
-    @ExceptionHandler(InvalidPasswordException.class)
-    public ResponseEntity<ErrorResponseDto> handleInvalidPasswordException(InvalidPasswordException e) {
-        return new ResponseEntity<>(new ErrorResponseDto(HttpStatus.UNAUTHORIZED, e.getMessage()), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(new ErrorResponseDto(httpStatus, message), httpStatus);
     }
 }

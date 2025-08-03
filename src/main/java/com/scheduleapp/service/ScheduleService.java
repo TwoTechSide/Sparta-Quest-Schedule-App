@@ -3,8 +3,7 @@ package com.scheduleapp.service;
 import com.scheduleapp.dto.EditScheduleTitleAndUsernameDto;
 import com.scheduleapp.dto.ScheduleDto;
 import com.scheduleapp.entity.Schedule;
-import com.scheduleapp.exception.InvalidPasswordException;
-import com.scheduleapp.exception.ScheduleNotFoundException;
+import com.scheduleapp.exception.CustomException;
 import com.scheduleapp.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+
+import static com.scheduleapp.exception.ErrorCode.INVALID_PASSWORD;
+import static com.scheduleapp.exception.ErrorCode.SCHEDULE_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
@@ -78,12 +80,12 @@ public class ScheduleService {
         String storedPassword = schedule.getPassword();
 
         if (!inputPassword.equals(storedPassword))
-            throw new InvalidPasswordException();
+            throw new CustomException(INVALID_PASSWORD);
     }
 
     // Id로 일정 검색, 없으면 ScheduleNotFoundException 예외 처리
     public Schedule findScheduleByIdOrThrow(Long scheduleId) {
         return scheduleRepository.findById(scheduleId)
-                .orElseThrow(ScheduleNotFoundException::new);
+                .orElseThrow(() -> new CustomException(SCHEDULE_NOT_FOUND));
     }
 }
