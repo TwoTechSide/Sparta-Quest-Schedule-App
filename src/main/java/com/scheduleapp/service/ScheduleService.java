@@ -49,8 +49,7 @@ public class ScheduleService {
     public ScheduleDto updateScheduleTitleAndUsername(Long scheduleId, EditScheduleTitleAndUsernameDto editScheduleTitleAndUsernameDto) {
         Schedule schedule = findScheduleByIdOrThrow(scheduleId);
 
-        if (isInvalidPassword(schedule, editScheduleTitleAndUsernameDto.getPassword()))
-            throw new InvalidPasswordException();
+        checkSchedulePasswordIsCorrect(schedule, editScheduleTitleAndUsernameDto.getPassword());
 
         schedule.updateTitleAndUsername(editScheduleTitleAndUsernameDto.getTitle(), editScheduleTitleAndUsernameDto.getUserName());
         return entityToDto(scheduleRepository.save(schedule));
@@ -59,18 +58,11 @@ public class ScheduleService {
     // 일정 삭제, 특정 id의 일정이 존재하지 않거나 password가 일치하지 않으면 예외처리
     @Transactional
     public void deleteSchedule(Long scheduleId, String inputPassword) {
-        try {
-            Schedule schedule = findScheduleByIdOrThrow(scheduleId);
+        Schedule schedule = findScheduleByIdOrThrow(scheduleId);
 
-            if (isInvalidPassword(schedule, inputPassword))
-                throw new InvalidPasswordException();
+        checkSchedulePasswordIsCorrect(schedule, inputPassword);
 
-            scheduleRepository.deleteById(scheduleId);
-        } catch (NoSuchElementException e) {
-            throw new NoSuchElementException();
-        } catch (InvalidPasswordException e) {
-            throw new InvalidPasswordException();
-        }
+        scheduleRepository.deleteById(scheduleId);
     }
 
     public ScheduleDto entityToDto(Schedule schedule) {
@@ -83,10 +75,12 @@ public class ScheduleService {
                 .modifiedAt(schedule.getModifiedAt()).build();
     }
 
-    // 비밀번호 불일치 여부
-    public boolean isInvalidPassword(Schedule schedule, String inputPassword) {
+    // 비밀번호가 일치하지 않으면 InvalidPasswordException 예외 처리
+    public void checkSchedulePasswordIsCorrect(Schedule schedule, String inputPassword) {
         String storedPassword = schedule.getPassword();
-        return !inputPassword.equals(storedPassword);
+
+        if (!inputPassword.equals(storedPassword))
+            throw new InvalidPasswordException();
     }
 
     // Id로 일정 검색, 없으면 ScheduleNotFoundException 예외 처리
