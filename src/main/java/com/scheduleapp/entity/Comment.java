@@ -1,19 +1,13 @@
 package com.scheduleapp.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.scheduleapp.dto.CommentDto;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class Comment extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,4 +15,15 @@ public class Comment extends BaseEntity {
     private String content;
     private String userName;
     private String password;
+
+    public Comment(CommentDto commentDto, Schedule schedule) {
+        this.content = commentDto.getContent();
+        this.userName = commentDto.getUserName();
+        this.password = commentDto.getPassword();
+        this.schedule = schedule;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "schedule_id")
+    private Schedule schedule;
 }
