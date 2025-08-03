@@ -3,7 +3,6 @@ package com.scheduleapp.controller;
 import com.scheduleapp.dto.EditScheduleTitleAndUsernameDto;
 import com.scheduleapp.dto.ScheduleDto;
 import com.scheduleapp.entity.Schedule;
-import com.scheduleapp.exception.InvalidPasswordException;
 import com.scheduleapp.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,42 +32,23 @@ public class ScheduleController {
     }
 
     // Schedule ID로 특정되는 일정 반환
-    // userId 일정을 찾을 수 없는 경우 NOT FOUND 반환
     @GetMapping("/{scheduleId}")
     public ResponseEntity<ScheduleDto> findSchedules(@PathVariable Long scheduleId) {
-        try {
-            ScheduleDto foundScheduleDto = scheduleService.findScheduleById(scheduleId);
-            return new ResponseEntity<>(foundScheduleDto, HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        ScheduleDto foundScheduleDto = scheduleService.findScheduleById(scheduleId);
+        return new ResponseEntity<>(foundScheduleDto, HttpStatus.OK);
     }
 
     // Schedule의 Title, Username 수정
-    // Schedule의 id를 찾을 수 없으면 BAD_REQUEST, 비밀번호가 일치하지 않으면 UNAUTHORIZED로 예외 처리
     @PatchMapping("/{scheduleId}")
     public ResponseEntity<ScheduleDto> editSchedule(@PathVariable Long scheduleId, @RequestBody EditScheduleTitleAndUsernameDto editScheduleTitleAndUsernameDto) {
-        try {
-            ScheduleDto updatedScheduleDto = scheduleService.updateScheduleTitleAndUsername(scheduleId, editScheduleTitleAndUsernameDto);
-            return new ResponseEntity<>(updatedScheduleDto, HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (InvalidPasswordException e) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+        ScheduleDto updatedScheduleDto = scheduleService.updateScheduleTitleAndUsername(scheduleId, editScheduleTitleAndUsernameDto);
+        return new ResponseEntity<>(updatedScheduleDto, HttpStatus.OK);
     }
 
-    // 선택된 id의 Schedule 삭제
-    // Schedule의 id를 찾을 수 없으면 BAD_REQUEST, 비밀번호가 일치하지 않으면 UNAUTHORIZED로 예외 처리
+    // 선택된 id의 Schedule 삭제 후 204 NO_CONTENT 반환
     @DeleteMapping("/{scheduleId}")
     public ResponseEntity<Void> deleteSchedule(@PathVariable Long scheduleId, @RequestParam String inputPassword) {
-        try {
-            scheduleService.deleteSchedule(scheduleId, inputPassword);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (InvalidPasswordException e) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+        scheduleService.deleteSchedule(scheduleId, inputPassword);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
