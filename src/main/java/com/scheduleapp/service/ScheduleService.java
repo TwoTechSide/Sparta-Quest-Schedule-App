@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Service
@@ -36,15 +35,14 @@ public class ScheduleService {
                 .toList();
     }
 
-    // Schedule의 id 값에 맞는 특정 일정을 Dto로 반환
+    // id 값이 맞는 특정 일정을 Dto로 반환
     @Transactional(readOnly = true)
     public ScheduleDto findScheduleById(Long scheduleId) {
         Schedule schedule = findScheduleByIdOrThrow(scheduleId);
         return entityToDto(schedule);
     }
 
-    // scheduleId로 일정을 찾을 수 없는 경우 -> NoSuchElementException
-    // 패스워드가 일치하지 않는 경우 -> InvalidPasswordException
+    // 일정의 제목과 작성자명 수정
     @Transactional
     public ScheduleDto updateScheduleTitleAndUsername(Long scheduleId, EditScheduleTitleAndUsernameDto editScheduleTitleAndUsernameDto) {
         Schedule schedule = findScheduleByIdOrThrow(scheduleId);
@@ -55,7 +53,7 @@ public class ScheduleService {
         return entityToDto(scheduleRepository.save(schedule));
     }
 
-    // 일정 삭제, 특정 id의 일정이 존재하지 않거나 password가 일치하지 않으면 예외처리
+    // 일정 삭제
     @Transactional
     public void deleteSchedule(Long scheduleId, String inputPassword) {
         Schedule schedule = findScheduleByIdOrThrow(scheduleId);
