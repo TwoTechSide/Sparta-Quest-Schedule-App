@@ -4,6 +4,7 @@ import com.scheduleapp.dto.EditScheduleTitleAndUsernameDto;
 import com.scheduleapp.dto.ScheduleDto;
 import com.scheduleapp.entity.Schedule;
 import com.scheduleapp.exception.InvalidPasswordException;
+import com.scheduleapp.exception.ScheduleNotFoundException;
 import com.scheduleapp.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
 
+    // 새로운 일정 생성
     @Transactional
     public Schedule saveSchedule(Schedule schedule) {
         return scheduleRepository.save(schedule);
@@ -34,12 +36,10 @@ public class ScheduleService {
                 .toList();
     }
 
-    // Schedule의 id 값에 맞는 특정 일정을 반환
+    // Schedule의 id 값에 맞는 특정 일정을 Dto로 반환
     @Transactional(readOnly = true)
-    public ScheduleDto findScheduleById(Long id) {
-        Schedule schedule = scheduleRepository.findById(id)
-                .orElseThrow(NoSuchElementException::new);
-
+    public ScheduleDto findScheduleById(Long scheduleId) {
+        Schedule schedule = findScheduleByIdOrThrow(scheduleId);
         return entityToDto(schedule);
     }
 
@@ -47,8 +47,7 @@ public class ScheduleService {
     // 패스워드가 일치하지 않는 경우 -> InvalidPasswordException
     @Transactional
     public ScheduleDto updateScheduleTitleAndUsername(Long scheduleId, EditScheduleTitleAndUsernameDto editScheduleTitleAndUsernameDto) {
-        Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(NoSuchElementException::new);
+        Schedule schedule = findScheduleByIdOrThrow(scheduleId);
 
         if (isInvalidPassword(schedule, editScheduleTitleAndUsernameDto.getPassword()))
             throw new InvalidPasswordException();
@@ -61,8 +60,7 @@ public class ScheduleService {
     @Transactional
     public void deleteSchedule(Long scheduleId, String inputPassword) {
         try {
-            Schedule schedule = scheduleRepository.findById(scheduleId)
-                    .orElseThrow(NoSuchElementException::new);
+            Schedule schedule = findScheduleByIdOrThrow(scheduleId);
 
             if (isInvalidPassword(schedule, inputPassword))
                 throw new InvalidPasswordException();
@@ -89,5 +87,11 @@ public class ScheduleService {
     public boolean isInvalidPassword(Schedule schedule, String inputPassword) {
         String storedPassword = schedule.getPassword();
         return !inputPassword.equals(storedPassword);
+    }
+
+    // Id로 일정 검색, 없으면 ScheduleNotFoundException 예외 처리
+    public Schedule findScheduleByIdOrThrow(Long scheduleId) {
+        return scheduleRepository.findById(scheduleId)
+                .orElseThrow(ScheduleNotFoundException::new);
     }
 }
