@@ -17,9 +17,13 @@ public class Schedule extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 30)
     private String title;
+    @Column(nullable = false, length = 200)
     private String content;
+    @Column(nullable = false)
     private String userName;
+    @Column(nullable = false)
     private String password;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "schedule")

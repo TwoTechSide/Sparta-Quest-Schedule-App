@@ -12,8 +12,11 @@ public class Comment extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 100)
     private String content;
+    @Column(nullable = false)
     private String userName;
+    @Column(nullable = false)
     private String password;
 
     public Comment(CommentRequestDto commentRequestDto, Schedule schedule) {
