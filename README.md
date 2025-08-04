@@ -154,45 +154,45 @@ com.scheduleapp/
 ## 📄 API 명세서
 
 ### - 일정 등록
-  <details>
-  <summary>접기/펼치기</summary>
+<details>
+<summary>접기/펼치기</summary>
 
-- 기본 정보
-
-|메서드|URL|설명|
+  - 기본 정보
+  
+  |메서드|URL|설명|
   |---|---|---|
-|POST|`/schedules`|새로운 일정 추가|
+  |POST|`/schedules`|새로운 일정 추가|
 
-- 본문
+  - 본문
 
-| 이름       |타입| 설명               |필수|
+  | 이름       |타입| 설명               |필수|
   |----------|---|------------------|---|
-| title    |String| 일정 제목 (길이 제한 : 30) |O|
-| content  |String| 일정 내용 (길이 제한 : 100) |O|
-| userName |String| 작성자명             |O|
-| password |String| 작성자 비밀번호         |O|
+  | title    |String| 일정 제목 (길이 제한 : 30) |O|
+  | content  |String| 일정 내용 (길이 제한 : 100) |O|
+  | userName |String| 작성자명             |O|
+  | password |String| 작성자 비밀번호         |O|
 
-- 응답 : CREATED
+  - 응답 : CREATED
 
-| 이름         | 타입            | 설명       |
+  | 이름         | 타입            | 설명       |
   |------------|---------------|----------|
-| id         | Long          | 일정 ID    |
-| title      | String        | 일정 제목    |
-| content    | String        | 일정 내용    |
-| userName   | String        | 작성자      |
-| createdAt  | LocalDateTime | 일정 생성 날짜 |
-| modifiedAt | LocalDateTime | 일정 수정 날짜 |
+  | id         | Long          | 일정 ID    |
+  | title      | String        | 일정 제목    |
+  | content    | String        | 일정 내용    |
+  | userName   | String        | 작성자      |
+  | createdAt  | LocalDateTime | 일정 생성 날짜 |
+  | modifiedAt | LocalDateTime | 일정 수정 날짜 |
 
   ```json
-  // 본문
   {
     "title" : "일정 제목",
     "content" : "일정 내용",
     "userName": "사용자명",
     "password": "패스워드"
   }
-
-  // 응답 : CREATED ( 201 )
+  ```
+  
+  ```json
   {
     "id" : 1,
     "title" : "일정 제목",
@@ -208,26 +208,25 @@ com.scheduleapp/
   <details>
   <summary>접기/펼치기</summary>
 
-- 기본 정보
+  - 기본 정보
 
-| 메서드 | URL                    | 설명    |
+  | 메서드 | URL                    | 설명    |
   |-----|------------------------|-------|
-| GET | `/schedules?userName=''` | 일정 조회 |
+  | GET | `/schedules?userName=''` | 일정 조회 |
 
-- 본문
+  - 본문
 
-| 이름       |타입| 설명                                     | 필수 |
+  | 이름       |타입| 설명                                     | 필수 |
   |----------|---|----------------------------------------|----|
-| userName |String| 특정 작성자의 일정 조회<br>- 표기하지 않는 경우 모든 일정 조회 | X  |
+  | userName |String| 특정 작성자의 일정 조회<br>- 표기하지 않는 경우 모든 일정 조회 | X  |
 
-- 응답 : OK
+  - 응답 : OK
 
-| 이름         | 타입            | 설명                                |
+  | 이름         | 타입            | 설명                                |
   |------------|---------------|-----------------------------------|
-|          | ScheduleResponseDto[]    | 일정 조회<br>- modifiedAt 내림차순 정렬로 반환 |
+  |          | ScheduleResponseDto[]    | 일정 조회<br>- modifiedAt 내림차순 정렬로 반환 |
 
   ```json
-  // 응답 : OK ( 200 )
   [
     {
       "id": 4,
@@ -249,23 +248,22 @@ com.scheduleapp/
   ```
   </details>
 
-<details>
+  <details>
   <summary>접기/펼치기</summary>
 
-- 기본 정보
+  - 기본 정보
 
   | 메서드 | URL                       | 설명            |
-    |-----|---------------------------|---------------|
+  |-----|---------------------------|---------------|
   | GET | `/schedules/{scheduleId}` | 특정 아이디의 일정 조회 |
 
-- 응답 : OK
+  - 응답 : OK
 
   | 이름         | 타입                  | 설명    |
-    |------------|---------------------|-------|
+  |------------|---------------------|-------|
   |          | ScheduleResponseDto | 일정 내용 |
 
   ```json
-  // 응답 : OK ( 200 )
   {
     "id": 1,
     "title": "제목1",
@@ -281,40 +279,40 @@ com.scheduleapp/
   <details>
   <summary>접기/펼치기</summary>
 
-- 기본 정보
-
-| 메서드   | URL                       | 설명    |
+  - 기본 정보
+  
+  | 메서드   | URL                       | 설명    |
   |-------|---------------------------|-------|
-| PATCH | `/schedules/{scheduleId}` | 일정 수정 |
-
-- 본문
-
-| 이름       |타입| 설명               |필수|
+  | PATCH | `/schedules/{scheduleId}` | 일정 수정 |
+  
+  - 본문
+  
+  | 이름       |타입| 설명               |필수|
   |----------|---|------------------|---|
-| title    |String| 일정 제목 (길이 제한 : 30) |O|
-| userName |String| 작성자명             |O|
-| password |String| 작성자 비밀번호         |O|
-
-- 응답 : OK
-
-| 이름         | 타입            | 설명       |
-    |------------|---------------|----------|
-| id         | Long          | 일정 ID    |
-| title      | String        | 일정 제목    |
-| content    | String        | 일정 내용    |
-| userName   | String        | 작성자      |
-| createdAt  | LocalDateTime | 일정 생성 날짜 |
-| modifiedAt | LocalDateTime | 일정 수정 날짜 |
+  | title    |String| 일정 제목 (길이 제한 : 30) |O|
+  | userName |String| 작성자명             |O|
+  | password |String| 작성자 비밀번호         |O|
+  
+  - 응답 : OK
+  
+  | 이름         | 타입            | 설명       |
+  |------------|---------------|----------|
+  | id         | Long          | 일정 ID    |
+  | title      | String        | 일정 제목    |
+  | content    | String        | 일정 내용    |
+  | userName   | String        | 작성자      |
+  | createdAt  | LocalDateTime | 일정 생성 날짜 |
+  | modifiedAt | LocalDateTime | 일정 수정 날짜 |
 
   ```json
-  // 본문
   {
     "title" : "일정 제목",
     "userName": "사용자명",
     "password": "패스워드"
   }
+  ```
 
-  // 응답 : OK ( 200 )
+  ```json
   {
     "id" : 1,
     "title" : "일정 제목",
@@ -330,52 +328,51 @@ com.scheduleapp/
   <details>
   <summary>접기/펼치기</summary>
 
-- 기본 정보
+  - 기본 정보
 
-| 메서드    | URL                       | 설명    |
+  | 메서드    | URL                       | 설명    |
   |--------|---------------------------|-------|
-| DELETE | `/schedules/{scheduleId}` | 일정 삭제 |
+  | DELETE | `/schedules/{scheduleId}` | 일정 삭제 |
 
-- 응답 : NO_CONTENT
+  - 응답 : NO_CONTENT
   </details>
 
 ### - 댓글 등록
   <details>
   <summary>접기/펼치기</summary>
 
-- 기본 정보
-
-| 메서드  | URL                                | 설명    |
+  - 기본 정보
+  
+  | 메서드  | URL                                | 설명    |
   |------|------------------------------------|-------|
-| POST | `/schedules/{scheduleId}/comments` | 댓글 생성 |
-
-- 본문
-
-| 이름       |타입| 설명                  |필수|
+  | POST | `/schedules/{scheduleId}/comments` | 댓글 생성 |
+  
+  - 본문
+  
+  | 이름       |타입| 설명                  |필수|
   |----------|---|---------------------|---|
-| content  |String| 댓글 내용 (길이 제한 : 100) |O|
-| userName |String| 작성자명                |O|
-| password |String| 작성자 비밀번호            |O|
-
-- 응답 : CREATED
-
-| 이름         | 타입            | 설명       |
+  | content  |String| 댓글 내용 (길이 제한 : 100) |O|
+  | userName |String| 작성자명                |O|
+  | password |String| 작성자 비밀번호            |O|
+  
+  - 응답 : CREATED
+  
+  | 이름         | 타입            | 설명       |
   |------------|---------------|----------|
-| content    | String        | 댓글 내용    |
-| userName   | String        | 작성자      |
-| createdAt  | LocalDateTime | 댓글 생성 날짜 |
-| modifiedAt | LocalDateTime | 댓글 수정 날짜 |
-  </details>
+  | content    | String        | 댓글 내용    |
+  | userName   | String        | 작성자      |
+  | createdAt  | LocalDateTime | 댓글 생성 날짜 |
+  | modifiedAt | LocalDateTime | 댓글 수정 날짜 |
 
   ```json
-  // 본문
   {
     "content" : "댓글",
     "userName": "사용자명",
     "password": "패스워드"
   }
+  ```
 
-  // 응답 : CREATED ( 201 )
+  ```json
   {
     "content": "댓글",
     "userName": "2TS",
@@ -383,6 +380,7 @@ com.scheduleapp/
     "modifiedAt": "2025-08-04T09:00:00.0561175"
   }
   ```
+  </details>
 
 ## 📅 개발 기간
 
