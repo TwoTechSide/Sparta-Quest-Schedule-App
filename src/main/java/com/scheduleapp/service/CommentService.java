@@ -18,12 +18,14 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final ScheduleService scheduleService;
 
+    private static final long COMMENT_COUNT_LIMIT = 10;
+
     // 새로운 댓글 생성
     @Transactional
     public CommentResponseDto saveComment(CommentRequestDto commentRequestDto, Long scheduleId) {
 
         long commentsCount = commentRepository.countByScheduleId(scheduleId);
-        if (commentsCount >= 10) {
+        if (commentsCount >= COMMENT_COUNT_LIMIT) {
             throw new CustomException(ErrorCode.COMMENT_LIMIT_EXCEEDED);
         }
 
