@@ -151,6 +151,12 @@ com.scheduleapp/
 
 - - -
 
+## 📄 ERD
+
+![img](.github/assets/ERD.png)
+
+- - -
+
 ## 📄 API 명세서
 
 ### - 일정 등록
