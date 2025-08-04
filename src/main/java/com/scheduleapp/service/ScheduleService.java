@@ -1,7 +1,8 @@
 package com.scheduleapp.service;
 
-import com.scheduleapp.dto.EditScheduleTitleAndUsernameDto;
-import com.scheduleapp.dto.ScheduleDto;
+import com.scheduleapp.dto.schedule.EditScheduleTitleAndUsernameDto;
+import com.scheduleapp.dto.schedule.ScheduleRequestDto;
+import com.scheduleapp.dto.schedule.ScheduleResponseDto;
 import com.scheduleapp.entity.Schedule;
 import com.scheduleapp.exception.CustomException;
 import com.scheduleapp.repository.ScheduleRepository;
@@ -23,13 +24,15 @@ public class ScheduleService {
 
     // 새로운 일정 생성
     @Transactional
-    public Schedule saveSchedule(Schedule schedule) {
-        return scheduleRepository.save(schedule);
+    public ScheduleResponseDto saveSchedule(ScheduleRequestDto scheduleRequestDto) {
+        Schedule schedule = scheduleRequestDto.toEntity();
+        Schedule savedSchedule = scheduleRepository.save(schedule);
+        return entityToDto(savedSchedule);
     }
 
     // userName == null 이면 전체 일정, userName != null 이면 필터 조건으로 일부 일정을 반환
     @Transactional(readOnly = true)
-    public List<ScheduleDto> findAllSchedule(String userName) {
+    public List<ScheduleResponseDto> findAllSchedule(String userName) {
         return scheduleRepository.findAll().stream()
                 .filter(schedule -> userName == null || schedule.getUserName().equals(userName))
                 .sorted(Comparator.comparing(Schedule::getModifiedAt).reversed())
@@ -39,14 +42,14 @@ public class ScheduleService {
 
     // id 값이 맞는 특정 일정을 Dto로 반환
     @Transactional(readOnly = true)
-    public ScheduleDto findScheduleById(Long scheduleId) {
+    public ScheduleResponseDto findScheduleById(Long scheduleId) {
         Schedule schedule = findScheduleByIdOrThrow(scheduleId);
         return entityToDto(schedule);
     }
 
     // 일정의 제목과 작성자명 수정
     @Transactional
-    public ScheduleDto updateScheduleTitleAndUsername(Long scheduleId, EditScheduleTitleAndUsernameDto editScheduleTitleAndUsernameDto) {
+    public ScheduleResponseDto updateScheduleTitleAndUsername(Long scheduleId, EditScheduleTitleAndUsernameDto editScheduleTitleAndUsernameDto) {
         Schedule schedule = findScheduleByIdOrThrow(scheduleId);
 
         checkSchedulePasswordIsCorrect(schedule, editScheduleTitleAndUsernameDto.getPassword());
@@ -65,8 +68,8 @@ public class ScheduleService {
         scheduleRepository.deleteById(scheduleId);
     }
 
-    public ScheduleDto entityToDto(Schedule schedule) {
-        return ScheduleDto.builder()
+    public ScheduleResponseDto entityToDto(Schedule schedule) {
+        return ScheduleResponseDto.builder()
                 .id(schedule.getId())
                 .title(schedule.getTitle())
                 .content(schedule.getContent())
