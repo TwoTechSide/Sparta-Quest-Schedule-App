@@ -1,7 +1,7 @@
 package com.scheduleapp.controller;
 
-import com.scheduleapp.dto.comment.CommentRequestDto;
 import com.scheduleapp.dto.comment.CommentResponseDto;
+import com.scheduleapp.dto.comment.CommentRequestDto;
 import com.scheduleapp.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,9 +17,9 @@ public class CommentController {
 
     // 댓글 추가
     @PostMapping("/{scheduleId}/comments")
-    public ResponseEntity<CommentRequestDto> createComment(@PathVariable Long scheduleId, @RequestBody CommentResponseDto commentResponseDto) {
+    public ResponseEntity<CommentResponseDto> createComment(@PathVariable Long scheduleId, @RequestBody CommentRequestDto commentRequestDto) {
 
-        CommentRequestDto savedComment = commentService.saveComment(commentResponseDto, scheduleId);
+        CommentResponseDto savedComment = commentService.saveComment(commentRequestDto, scheduleId);
         return new ResponseEntity<>(savedComment, HttpStatus.CREATED);
     }
 }

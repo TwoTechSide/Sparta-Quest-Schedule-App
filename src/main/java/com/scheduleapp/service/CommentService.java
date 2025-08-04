@@ -1,7 +1,7 @@
 package com.scheduleapp.service;
 
-import com.scheduleapp.dto.comment.CommentRequestDto;
 import com.scheduleapp.dto.comment.CommentResponseDto;
+import com.scheduleapp.dto.comment.CommentRequestDto;
 import com.scheduleapp.entity.Comment;
 import com.scheduleapp.entity.Schedule;
 import com.scheduleapp.exception.CustomException;
@@ -20,7 +20,7 @@ public class CommentService {
 
     // 새로운 댓글 생성
     @Transactional
-    public CommentRequestDto saveComment(CommentResponseDto commentResponseDto, Long scheduleId) {
+    public CommentResponseDto saveComment(CommentRequestDto commentRequestDto, Long scheduleId) {
 
         long commentsCount = commentRepository.countByScheduleId(scheduleId);
         if (commentsCount >= 10) {
@@ -28,18 +28,10 @@ public class CommentService {
         }
 
         Schedule schedule = scheduleService.findScheduleByIdOrThrow(scheduleId);
-        Comment comment = new Comment(commentResponseDto, schedule);
+        Comment comment = new Comment(commentRequestDto, schedule);
 
         commentRepository.save(comment);
 
-        return entityToDto(comment);
-    }
-
-    public CommentRequestDto entityToDto(Comment comment) {
-        return CommentRequestDto.builder()
-                .content(comment.getContent())
-                .userName(comment.getUserName())
-                .createdAt(comment.getCreatedAt())
-                .modifiedAt(comment.getModifiedAt()).build();
+        return new CommentResponseDto(comment);
     }
 }
