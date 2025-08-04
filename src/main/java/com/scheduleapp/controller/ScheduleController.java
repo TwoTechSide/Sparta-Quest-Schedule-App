@@ -3,6 +3,7 @@ package com.scheduleapp.controller;
 import com.scheduleapp.dto.schedule.EditScheduleTitleAndUsernameDto;
 import com.scheduleapp.dto.schedule.ScheduleRequestDto;
 import com.scheduleapp.dto.schedule.ScheduleResponseDto;
+import com.scheduleapp.dto.schedule.ScheduleWithCommentResponseDto;
 import com.scheduleapp.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,8 +33,8 @@ public class ScheduleController {
 
     // Schedule ID로 특정되는 일정 반환
     @GetMapping("/{scheduleId}")
-    public ResponseEntity<ScheduleResponseDto> findSchedules(@PathVariable Long scheduleId) {
-        ScheduleResponseDto foundScheduleResponseDto = scheduleService.findScheduleById(scheduleId);
+    public ResponseEntity<ScheduleWithCommentResponseDto> findSchedules(@PathVariable Long scheduleId) {
+        ScheduleWithCommentResponseDto foundScheduleResponseDto = scheduleService.findScheduleById(scheduleId);
         return new ResponseEntity<>(foundScheduleResponseDto, HttpStatus.OK);
     }
 

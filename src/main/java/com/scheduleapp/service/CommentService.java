@@ -32,14 +32,6 @@ public class CommentService {
 
         commentRepository.save(comment);
 
-        return entityToDto(comment);
-    }
-
-    public CommentResponseDto entityToDto(Comment comment) {
-        return CommentResponseDto.builder()
-                .content(comment.getContent())
-                .userName(comment.getUserName())
-                .createdAt(comment.getCreatedAt())
-                .modifiedAt(comment.getModifiedAt()).build();
+        return new CommentResponseDto(comment);
     }
 }
